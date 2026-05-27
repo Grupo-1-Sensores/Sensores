@@ -2,6 +2,7 @@
 #define MQTT_MANAGER_H
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <WifiManager.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
@@ -10,10 +11,10 @@ void configurarMQTT();
 void conectarMQTT();
 void garantirMQTTconectado();
 void loopMQTT();
-void isConnected();
 
 void publicarMensagem(const char * topico, const char * mensagem);
 void publicarMensagemNoTopico(int indiceTopico, const char * mensagem);
+void publicarJson(int indiceTopico, JsonDocument & doc);
 
 bool mqttEstaConectado();
 

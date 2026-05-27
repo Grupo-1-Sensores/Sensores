@@ -1,3 +1,6 @@
+#ifndef SENSORES_H
+#define SENSORES_H
+
 #include <Arduino.h>
 
 struct LeituraSensores {
@@ -11,3 +14,5 @@ void sensoresInit();
 bool lerSensores();
 LeituraSensores getLeitura();
 float getTempVariacao();
+
+#endif

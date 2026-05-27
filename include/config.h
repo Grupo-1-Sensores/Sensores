@@ -1,3 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #define PINO_TEMP 5
 #define PINO_SOM 11
 
@@ -16,3 +19,17 @@
 
 #define SOM_LIMITE_ALTO 220
 #define SOM_CONSECUTIVOS 5
+
+// Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)
+enum TopicoPublicacao {
+    TOPICO_ALERTA = 0,
+    TOPICO_LOG = 1,
+    TOPICO_STATUS = 2
+};
+
+// Indices dos topicos de recebimento (ordem de TOPICOS_RECEBER em secrets.cpp)
+enum TopicoRecebido {
+    TOPICO_COMANDO = 0,
+};
+
+#endif

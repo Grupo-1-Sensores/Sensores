@@ -13,7 +13,6 @@ void verificarAlertas()
     if (!l.valida)
         return;
     JsonDocument docEnvioAlerta;
-    String mensagemAlerta;
 
     if (l.temp > TEMP_MAX)
     {
@@ -66,9 +65,7 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
-        serializeJson(docEnvioAlerta, mensagemAlerta);
+        publicarJson(TOPICO_ALERTA, docEnvioAlerta);
         docEnvioAlerta.clear();
-        Serial.println(mensagemAlerta);
-        publicarMensagemNoTopico(0, mensagemAlerta.c_str());
     }
 }
