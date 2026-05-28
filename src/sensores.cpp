@@ -2,11 +2,11 @@
 #include "config.h"
 #include <DHT.h>
 
-static DHT dht(PINO_TEMP, TIPO_DHT);
+static DHT dht(PINO_TEMPERATURA, TIPO_DHT);
 
 static LeituraSensores leituraAtual;
 static unsigned long ultimaLeitura = 0;
-static float tempHistorico[5];
+static float temperaturaHistorico[5];
 static unsigned long tempoHistorico[5];
 static uint8_t indexHistorico = 0;
 
@@ -23,20 +23,20 @@ bool lerSensores()
 
     ultimaLeitura = millis();
 
-    float temp = dht.readTemperature();
+    float temperatura = dht.readTemperature();
     float umid = dht.readHumidity();
     int som = analogRead(PINO_SOM);
 
-    if (isnan(temp) || isnan(umid))
+    if (isnan(temperatura) || isnan(umid))
     {
         leituraAtual.valida = false;
         Serial.println("[ERRO] Falha na leitura do DHT22");
         return false;
     }
 
-    leituraAtual = {temp, umid, som, true};
+    leituraAtual = {temperatura, umid, som, true};
 
-    tempHistorico[indexHistorico] = temp;
+    temperaturaHistorico[indexHistorico] = temperatura;
     tempoHistorico[indexHistorico] = millis();
     indexHistorico = (indexHistorico + 1) % 5;
 
@@ -48,7 +48,7 @@ LeituraSensores getLeitura()
     return leituraAtual;
 }
 
-float getTempVariacao()
+float getTemperaturaVariacao()
 {
     if (!leituraAtual.valida)
         return 0;
@@ -62,7 +62,7 @@ float getTempVariacao()
             continue;
         if (agora - tempoHistorico[i] > JANELA_VARIACAO_MS)
             continue;
-        float v = abs(leituraAtual.temp - tempHistorico[i]);
+        float v = abs(leituraAtual.temperatura - temperaturaHistorico[i]);
         if (v > maxVar)
             maxVar = v;
     }

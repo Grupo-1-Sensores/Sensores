@@ -38,14 +38,14 @@ void loop()
 	{
 		LeituraSensores leitura = getLeitura();
 
-		docEnvio["temperatura"] = leitura.temp;
+		docEnvio["temperatura"] = leitura.temperatura;
 		docEnvio["umidade"] = leitura.umidade;
 		docEnvio["som"] = leitura.som;
 
 		publicarJson(TOPICO_LOG, docEnvio);
 		docEnvio.clear();
 
-		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som: %d\n", leitura.temp, leitura.umidade, leitura.som);
+		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som: %d\n", leitura.temperatura, leitura.umidade, leitura.som);
 		ultimaPublicacao = millis();
 	}
 }

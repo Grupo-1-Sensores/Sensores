@@ -14,24 +14,24 @@ void verificarAlertas()
         return;
     JsonDocument docEnvioAlerta;
 
-    if (l.temp > TEMP_MAX)
+    if (l.temperatura > TEMPERATURA_MAX)
     {
 
-        docEnvioAlerta["alerta_temperatura"] = String("TEMP_MAX: Temperatura acima do limite: ") + String(l.temp);
+        docEnvioAlerta["alerta_temperatura"] = String("TEMP_MAX: Temperatura acima do limite: ") + String(l.temperatura);
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
     }
 
-    if (l.temp < TEMP_MIN)
+    if (l.temperatura < TEMPERATURA_MIN)
     {
 
-        docEnvioAlerta["alerta_temperatura"] = String("TEMP_MIN: Temperatura abaixo do limite: ") + String(l.temp);
-        Serial.println("[ALERTA] TEMP_MIN: Temperatura abaixo do limite");
+        docEnvioAlerta["alerta_temperatura"] = String("TEMPERATURA_MIN: Temperatura abaixo do limite: ") + String(l.temperatura);
+        Serial.println("[ALERTA] TEMPERATURA_MIN: Temperatura abaixo do limite");
     }
 
-    if (getTempVariacao() >= TEMP_VARIACAO_MAX)
+    if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
     {
-        docEnvioAlerta["alerta_Variacaotemperatura"] = String("TEMP_VARIACAO: Variação brusca de temperatura detectada: ");
-        Serial.println("[ALERTA] TEMP_VARIACAO: Variação brusca de temperatura detectada");
+        docEnvioAlerta["alerta_Variacaotemperatura"] = String("TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada: ");
+        Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
     }
 
     if (l.umidade < UMIDADE_CRITICA)

@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 struct LeituraSensores {
-    float temp;
+    float temperatura;
     float umidade;
     int som;
     bool valida;
@@ -13,6 +13,6 @@ struct LeituraSensores {
 void sensoresInit();
 bool lerSensores();
 LeituraSensores getLeitura();
-float getTempVariacao();
+float getTemperaturaVariacao();
 
 #endif
