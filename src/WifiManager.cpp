@@ -7,7 +7,7 @@
 #include "WifiManager.h"
 #include "secrets.h"
 
-
+bool comecoHora = true;
 void conectarWiFi()
 {
     Serial.println("=============================");
@@ -67,4 +67,20 @@ bool wifiEstaConectado()
 {
     return WiFi.status() == WL_CONNECTED;
 
+}
+String pegarHora()
+{
+    if(comecoHora)
+    {
+    configTime(-3 * 3600, 0, "pool.ntp.org");
+    comecoHora = false;
+    }
+    time_t agoraHora;
+    time(&agoraHora);
+
+    struct tm horaNaoFormatada;
+    getLocalTime(&horaNaoFormatada);
+    char horaFormatada [20];
+    strftime(horaFormatada, sizeof(horaFormatada), "%H:%M:%S", &horaNaoFormatada);
+    return String(horaFormatada);
 }

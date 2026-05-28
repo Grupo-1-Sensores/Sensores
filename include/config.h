@@ -17,7 +17,7 @@
 #define UMIDADE_MAX 85.0f
 #define UMIDADE_CRITICA 20.0f
 
-#define SOM_LIMITE_ALTO 400
+#define SOM_LIMITE_ALTO 900
 #define SOM_CONSECUTIVOS 5
 
 // Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)

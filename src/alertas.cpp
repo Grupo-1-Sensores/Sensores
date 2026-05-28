@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <MqttManager.h>
+#include <WifiManager.h>
 
 static uint8_t somConsecutivos = 0;
 JsonDocument docEnvioAlerta;
@@ -17,8 +18,10 @@ void verificarAlertas()
     if (l.temperatura > TEMPERATURA_MAX)
     {
 
-        docEnvioAlerta["alerta_temperatura"] = String("Temperatura acima do limite: ") + String(l.temperatura);
+        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
+        docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
+
     }
     else if (l.temperatura < TEMPERATURA_MIN)
     {
@@ -48,6 +51,7 @@ void verificarAlertas()
     {
         docEnvioAlerta["alerta_umidade"] = String("Umidade acima do máximo");
         Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
+        docEnvioAlerta["Hora"] = pegarHora();
     }
 
     if (l.som > SOM_LIMITE_ALTO)
