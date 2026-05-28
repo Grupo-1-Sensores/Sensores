@@ -45,7 +45,7 @@ void loop()
 		publicarJson(TOPICO_LOG, docEnvio);
 		docEnvio.clear();
 
-		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som: %d\n", leitura.temperatura, leitura.umidade, leitura.som);
+		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som:  dB%d\n", leitura.temperatura, leitura.umidade, leitura.som);
 		ultimaPublicacao = millis();
 	}
 }
