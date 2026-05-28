@@ -6,46 +6,47 @@
 #include <MqttManager.h>
 
 static uint8_t somConsecutivos = 0;
+JsonDocument docEnvioAlerta;
 
 void verificarAlertas()
 {
     LeituraSensores l = getLeitura();
     if (!l.valida)
         return;
-    JsonDocument docEnvioAlerta;
 
     if (l.temperatura > TEMPERATURA_MAX)
     {
 
-        docEnvioAlerta["alerta_temperatura"] = String("TEMP_MAX: Temperatura acima do limite: ") + String(l.temperatura);
+        docEnvioAlerta["alerta_temperatura"] = String("Temperatura acima do limite: ") + String(l.temperatura);
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
     }
-
-    if (l.temperatura < TEMPERATURA_MIN)
+    else if (l.temperatura < TEMPERATURA_MIN)
     {
 
-        docEnvioAlerta["alerta_temperatura"] = String("TEMPERATURA_MIN: Temperatura abaixo do limite: ") + String(l.temperatura);
+        docEnvioAlerta["alerta_temperatura"] = String("Temperatura abaixo do limite: ") + String(l.temperatura);
         Serial.println("[ALERTA] TEMPERATURA_MIN: Temperatura abaixo do limite");
     }
-
-    if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
+    else if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
     {
-        docEnvioAlerta["alerta_Variacaotemperatura"] = String("TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada: ");
+        docEnvioAlerta["alerta_Variacaotemperatura"] = String("Variação brusca de temperatura detectada!");
         Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
     }
 
     if (l.umidade < UMIDADE_CRITICA)
     {
+        docEnvioAlerta["alerta_umidade"] = String("Umidade em nível crítico");
         Serial.println("[ALERTA] UMIDADE_CRITICA: Umidade em nível crítico");
     }
 
     else if (l.umidade < UMIDADE_MIN)
     {
+        docEnvioAlerta["alerta_umidade"] = String("Umidade abaixo do mínimo");
         Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
     }
 
     else if (l.umidade > UMIDADE_MAX)
     {
+        docEnvioAlerta["alerta_umidade"] = String("Umidade acima do máximo");
         Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
     }
 
@@ -54,6 +55,7 @@ void verificarAlertas()
         somConsecutivos++;
         if (somConsecutivos >= SOM_CONSECUTIVOS)
         {
+            docEnvioAlerta["alerta_ruido"] = String("Ruído elevado persistente detectado");
             Serial.println("[ALERTA] SOM_ALTO: Ruído elevado persistente detectado");
             somConsecutivos = 0;
         }
