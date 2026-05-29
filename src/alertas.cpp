@@ -25,33 +25,37 @@ void verificarAlertas()
     }
     else if (l.temperatura < TEMPERATURA_MIN)
     {
-
-        docEnvioAlerta["alerta_temperatura"] = String("Temperatura abaixo do limite: ") + String(l.temperatura);
+        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
+        docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] TEMPERATURA_MIN: Temperatura abaixo do limite");
     }
     else if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
     {
-        docEnvioAlerta["alerta_Variacaotemperatura"] = String("Variação brusca de temperatura detectada!");
-        Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
+    docEnvioAlerta["alerta_temperatura"] = l.temperatura;       
+    docEnvioAlerta["Hora"] = pegarHora();
+     Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
     }
 
     if (l.umidade < UMIDADE_CRITICA)
     {
-        docEnvioAlerta["alerta_umidade"] = String("Umidade em nível crítico");
+        docEnvioAlerta["alerta_umidade"] = l.umidade;
+         docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] UMIDADE_CRITICA: Umidade em nível crítico");
     }
 
     else if (l.umidade < UMIDADE_MIN)
     {
-        docEnvioAlerta["alerta_umidade"] = String("Umidade abaixo do mínimo");
-        Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
+    docEnvioAlerta["alerta_umidade"] = l.umidade;        
+    docEnvioAlerta["Hora"] = pegarHora();
+    Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
     }
 
     else if (l.umidade > UMIDADE_MAX)
     {
-        docEnvioAlerta["alerta_umidade"] = String("Umidade acima do máximo");
-        Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
+        docEnvioAlerta["alerta_umidade"] = l.umidade;
         docEnvioAlerta["Hora"] = pegarHora();
+        Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
+        
     }
 
     if (l.som > SOM_LIMITE_ALTO)
@@ -59,7 +63,8 @@ void verificarAlertas()
         somConsecutivos++;
         if (somConsecutivos >= SOM_CONSECUTIVOS)
         {
-            docEnvioAlerta["alerta_ruido"] = String("Ruído elevado persistente detectado");
+            docEnvioAlerta["alerta_ruido"] = analogRead(PINO_SOM);
+            docEnvioAlerta["Hora"] = pegarHora();
             Serial.println("[ALERTA] SOM_ALTO: Ruído elevado persistente detectado");
             somConsecutivos = 0;
         }
