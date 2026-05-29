@@ -7,6 +7,7 @@
 #include "MqttManager.h"
 
 static unsigned long ultimaPublicacao = 0;
+static unsigned long ultimaPublicacaoSom = 0;
 
 void tratarJsonComando(const String &mensagem);
 void tratarMensagemRecebida(const char *topico, const String &mensagem);
@@ -47,6 +48,13 @@ void loop()
 
     Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som:  %d dB\n", leitura.temperatura, leitura.umidade, leitura.som);
     ultimaPublicacao = millis();
+  }
+  if(millis() - ultimaPublicacaoSom > INTERVALO_PUBLICACAO_MS_SOM)
+  {
+    docEnvio["som"] = analogRead(PINO_SOM);
+    publicarJson(TOPICO_LOG, docEnvio);
+    docEnvio.clear();
+    ultimaPublicacaoSom = millis();
   }
 }
 

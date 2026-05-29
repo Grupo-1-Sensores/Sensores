@@ -14,6 +14,7 @@ void sensoresInit()
 {
     dht.begin();
     pinMode(PINO_SOM, INPUT);
+    pinMode(PINO_SOM_DIGITAL, INPUT);
 }
 
 bool lerSensores()

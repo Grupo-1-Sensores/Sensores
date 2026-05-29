@@ -3,10 +3,12 @@
 
 #define PINO_TEMPERATURA 5
 #define PINO_SOM 11
+#define PINO_SOM_DIGITAL 10
 
 #define TIPO_DHT DHT22
 #define INTERVALO_DHT_MS 2000UL
-#define INTERVALO_PUBLICACAO_MS 120000UL
+#define INTERVALO_PUBLICACAO_MS 10000UL
+#define INTERVALO_PUBLICACAO_MS_SOM 1000UL
 
 #define TEMPERATURA_MAX 30.0f
 #define TEMPERATURA_MIN 14.0f
@@ -17,7 +19,9 @@
 #define UMIDADE_MAX 85.0f
 #define UMIDADE_CRITICA 20.0f
 
-#define SOM_LIMITE_ALTO 900
+#define SOM_BAIXO 35f
+
+#define SOM_ALTO 120f
 #define SOM_CONSECUTIVOS 5
 
 // Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)
