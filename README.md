@@ -83,4 +83,11 @@ Exemplo de mensagem publicada:
 
 ## 👥 Autores
 
+* [Ana Clara](https://github.com/MCAnaClara)
+* [Gael Salvador](https://github.com/gaelsalvador)
+* [Gabriel Selvenca](https://github.com/GabrielSelvenca)
+* [Juliano Luz](https://github.com/julianoluz10)
+* [Willian Ribeiro](https://github.com/WillR7s)
+* [Yarllei Thauã](https://github.com/yarlleith)
+
 Projeto desenvolvido para fins educacionais e de monitoramento ambiental utilizando tecnologias IoT baseadas em ESP32.
