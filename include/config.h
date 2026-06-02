@@ -21,7 +21,7 @@
 
 #define SOM_BAIXO 35f
 
-#define SOM_ALTO 120f
+#define SOM_ALTO 1200f
 #define SOM_CONSECUTIVOS 5
 
 // Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)
