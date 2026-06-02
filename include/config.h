@@ -7,7 +7,7 @@
 #define TIPO_DHT DHT22
 #define INTERVALO_DHT_MS 2000UL
 #define INTERVALO_PUBLICACAO_MS 10000UL
-#define INTERVALO_PUBLICACAO_MS_SOM 1000UL
+#define INTERVALO_PUBLICACAO_MS_SOM 10000UL
 
 #define TEMPERATURA_MAX 30.0f
 #define TEMPERATURA_MIN 14.0f
@@ -25,14 +25,12 @@
 
 // Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)
 enum TopicoPublicacao {
-    TOPICO_ALERTA = 0,
-    TOPICO_LOG = 1,
-    TOPICO_STATUS = 2
+    TOPICO_LOG = 0,
 };
 
 // Indices dos topicos de recebimento (ordem de TOPICOS_RECEBER em secrets.cpp)
 enum TopicoRecebido {
-    TOPICO_COMANDO = 0,
+    TOPICO_CONTROLE = 0,
 };
 
 #endif

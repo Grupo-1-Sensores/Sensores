@@ -76,7 +76,7 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
-        publicarJson(TOPICO_ALERTA, docEnvioAlerta);
+        publicarJson(TOPICO_LOG, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
 }

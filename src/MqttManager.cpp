@@ -146,7 +146,7 @@ void conectarMQTT()
     }
     if (!mqttClient.connected())
     {
-        Serial.println("Nao foi possível conectar ao broker MQTT após" + String(maxTentativasMQTT) + "tentativas");
+        Serial.println("Nao foi possível conectar ao broker MQTT após " + String(maxTentativasMQTT) + " tentativas");
     }
 }
 
