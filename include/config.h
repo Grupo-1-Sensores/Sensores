@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define PINO_TEMPERATURA 5
-#define PINO_SOM 11
+#define PINO_SOM 6
 
 #define TIPO_DHT DHT22
 #define INTERVALO_DHT_MS 2000UL

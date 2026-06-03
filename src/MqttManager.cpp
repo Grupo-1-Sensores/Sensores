@@ -135,7 +135,7 @@ void conectarMQTT()
                 }
             }
 
-            publicarMensagem("senai134/sensores/status", "ESP32 conectado ao MQTT");
+            publicarMensagem("senai134/equipe/luigi/devices/sensor", "ESP32 conectado ao MQTT");
         }
         else
         {
