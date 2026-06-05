@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 
-struct LeituraSensores {
+struct LeituraSensores
+{
     float temperatura;
     float umidade;
     int som;

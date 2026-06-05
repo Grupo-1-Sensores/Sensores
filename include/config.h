@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define PINO_TEMPERATURA 5
-#define PINO_SOM 6
+#define PINO_SOM 11
 
 #define TIPO_DHT DHT22
 #define INTERVALO_DHT_MS 2000UL
@@ -25,12 +25,13 @@
 
 // Indices dos topicos de publicacao (ordem de TOPICOS_PUBLICAR em secrets.cpp)
 enum TopicoPublicacao {
-    TOPICO_LOG = 0,
+    TOPICO_DASH = 0
 };
 
 // Indices dos topicos de recebimento (ordem de TOPICOS_RECEBER em secrets.cpp)
 enum TopicoRecebido {
-    TOPICO_CONTROLE = 0,
+    TOPICO_ESP = 0,
+    TOPICO_CONTROLE = 1
 };
 
 #endif

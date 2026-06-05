@@ -21,7 +21,6 @@ void verificarAlertas()
         docEnvioAlerta["alerta_temperatura"] = l.temperatura;
         docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
-
     }
     else if (l.temperatura < TEMPERATURA_MIN)
     {
@@ -31,23 +30,23 @@ void verificarAlertas()
     }
     else if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
     {
-    docEnvioAlerta["alerta_temperatura"] = l.temperatura;       
-    docEnvioAlerta["Hora"] = pegarHora();
-     Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
+        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
+        docEnvioAlerta["Hora"] = pegarHora();
+        Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
     }
 
     if (l.umidade < UMIDADE_CRITICA)
     {
         docEnvioAlerta["alerta_umidade"] = l.umidade;
-         docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] UMIDADE_CRITICA: Umidade em nível crítico");
     }
 
     else if (l.umidade < UMIDADE_MIN)
     {
-    docEnvioAlerta["alerta_umidade"] = l.umidade;        
-    docEnvioAlerta["Hora"] = pegarHora();
-    Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
+        docEnvioAlerta["alerta_umidade"] = l.umidade;
+        docEnvioAlerta["Hora"] = pegarHora();
+        Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
     }
 
     else if (l.umidade > UMIDADE_MAX)
@@ -55,7 +54,6 @@ void verificarAlertas()
         docEnvioAlerta["alerta_umidade"] = l.umidade;
         docEnvioAlerta["Hora"] = pegarHora();
         Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
-        
     }
 
     if (l.som > SOM_LIMITE_ALTO)
@@ -76,7 +74,7 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
-        publicarJson(TOPICO_LOG, docEnvioAlerta);
+        //publicarJson(TOPICO_LOG, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
 }

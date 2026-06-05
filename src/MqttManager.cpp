@@ -165,7 +165,7 @@ void garantirMQTTconectado()
 
     if (!mqttClient.connected())
     {
-        Serial.println("MQTT conectado. Tentando reconectar...");
+        Serial.println("MQTT desconectado. Tentando reconectar...");
         conectarMQTT();
     }
 }
