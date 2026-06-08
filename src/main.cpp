@@ -10,21 +10,13 @@ static ulong ultimaPublicacao = 0;
 static ulong ultimaPublicacaoSom = 0;
 static const ulong delayValidacao = 50;
 
-const int VALOR_SOM_MAX = 2700;
-const int VALOR_SOM_MIN = 100;
-const int ADC_MAX = 4095;
-const float VREF = 3.3;
-const unsigned long JANELA_MS = 100;
-const int MAX_AMOSTRAS = 1000;
-const float REF_RMS = 0.00631;
-float DB_OFFSET = 35.0;
-
 void tratarJsonComando(const String &mensagem);
 void tratarMensagemRecebida(const char *topico, const String &mensagem);
-float lerDbMedio();
 void tratarJsonComandoValida(const String &mensagem);
+void tratarJsonComandoRecebimento(const String &mensagem);
 
 JsonDocument docEnvio;
+JsonDocument docEnvioSom;
 
 void setup()
 {
@@ -43,7 +35,7 @@ void loop()
 	garantirWiFiConectado();
 	garantirMQTTconectado();
 	loopMQTT();
-	lerDbMedio();
+	atualizarSom();
 
 	int valorSomMin = 0;
 	int valorSomMax = 0;
@@ -56,7 +48,7 @@ void loop()
 	if (getLeitura().valida && millis() - ultimaPublicacao > INTERVALO_PUBLICACAO_MS)
 	{
 		LeituraSensores leitura = getLeitura();
-		float db = lerDbMedio();
+		float db = getDbMedio();
 		db = round(db * 10.0) / 10.0;
 
 		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
@@ -72,12 +64,13 @@ void loop()
 
 	if (millis() - ultimaPublicacaoSom > INTERVALO_PUBLICACAO_MS_SOM)
 	{
-		float db  = lerDbMedio();
+		float db = getDbMedio();
 		db = round(db * 10.0) / 10.0;
-		docEnvio["sensores"]["som"] = db;
+		docEnvioSom["sensores"]["som"] = db;
 
-		publicarJson(TOPICO_DASH, docEnvio);
-		docEnvio.clear();
+		publicarJson(TOPICO_SOM, docEnvioSom);
+		docEnvioSom.clear();
+		Serial.printf("\nEnviando %.1f db\n", db);
 
 		ultimaPublicacaoSom = millis();
 	}
@@ -104,13 +97,12 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
 
 		switch (i)
 		{
-		case TOPICO_DASH:
+		case TOPICO_ESP:
 			tratarJsonComando(mensagem);
 			break;
 
-		case TOPICO_CONTROLE:
-			
-			tratarJsonComando(mensagem);
+		case TOPICO_SHARED:
+			tratarJsonComandoRecebimento(mensagem);
 			break;
 
 		default:
@@ -138,76 +130,10 @@ void tratarJsonComando(const String &mensagem)
 	// TODO implementar receber dados de fora.
 }
 
-float lerDbMedio()
-{
-	int amostras[MAX_AMOSTRAS];
-	unsigned long inicio = millis();
-	float somaDb = 0;
-	int janelas = 0;
-
-	while (millis() - inicio < 10000)
-	{
-		unsigned long t = millis();
-		int quantidade = 0;
-		long somaAdc = 0;
-
-		while ((millis() - t < JANELA_MS) && (quantidade < MAX_AMOSTRAS))
-		{
-			int leitura = analogRead(PINO_SOM);
-			amostras[quantidade] = leitura;
-			somaAdc += leitura;
-			quantidade++;
-			delayMicroseconds(100);
-		}
-		if (quantidade == 0)
-			continue;
-
-		// ---- RMS dessa janela (igual ao seu cálculo de antes) ----
-		float mediaAdc = (float)somaAdc / quantidade;
-		double somaQuadrados = 0;
-		for (int i = 0; i < quantidade; i++)
-		{
-			float ac = amostras[i] - mediaAdc;
-			somaQuadrados += ac * ac;
-		}
-		float rmsVolts = sqrt(somaQuadrados / quantidade) * (VREF / ADC_MAX);
-		if (rmsVolts < 0.000001)
-			rmsVolts = 0.000001;
-
-		// ---- dB dessa janela, somado para a média ----
-		somaDb += 20.0 * log10(rmsVolts / REF_RMS) + DB_OFFSET;
-		janelas++;
-	}
-
-	if (janelas == 0)
-		return -1;
-	return somaDb / janelas; // média dos 10s
-}
-
 void tratarJsonComandoValida(const String &mensagem)
 {
 	JsonDocument doc;
 	DeserializationError erro = deserializeJson(doc, mensagem);
-	unsigned long tempoEsperaRecebimento = 0;
-	if(millis() - tempoEsperaRecebimento > 15000 && !doc["sensorResponseTrue"].is<JsonObject>())
-	{
-		LeituraSensores leitura = getLeitura();
-		tempoEsperaRecebimento = millis();
-		float db = lerDbMedio();
-		db = round(db * 10.0) / 10.0;
-
-		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
-		docEnvio["sensores"]["umidade"] = leitura.umidade;
-		docEnvio["sensores"]["som"] = db;
-
-		publicarJson(TOPICO_CONTROLE, docEnvio);
-		docEnvio.clear();
-	}
-	else
-	{
-		Serial.println("Mensagem recebida");
-	}
-	
 
 	if (erro)
 	{
@@ -216,6 +142,45 @@ void tratarJsonComandoValida(const String &mensagem)
 		return;
 	}
 
+	static unsigned long tempoEsperaRecebimento = 0;
+	if (millis() - tempoEsperaRecebimento > 15000 && !doc["sensorResponseTrue"])
+	{
+		LeituraSensores leitura = getLeitura();
+		tempoEsperaRecebimento = millis();
 
-	// TODO implementar receber dados de fora.
+		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
+		docEnvio["sensores"]["umidade"] = leitura.umidade;
+		docEnvio["sensores"]["som"] = leitura.som;
+
+		publicarJson(TOPICO_SHARED_PUB, docEnvio);
+		docEnvio.clear();
+	}
+	else
+	{
+		Serial.println("Mensagem recebida");
+	}
+}
+void tratarJsonComandoRecebimento(const String &mensagem)
+{
+	JsonDocument doc;
+	DeserializationError erro = deserializeJson(doc, mensagem);
+
+	if (erro)
+	{
+		Serial.println("Erro ao interpretar JSON");
+		Serial.println(erro.c_str());
+		return;
+	}
+
+	if (doc["sensores"]["comando"].is<JsonObject>())
+	{
+		LeituraSensores leitura = getLeitura();
+
+		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
+		docEnvio["sensores"]["umidade"] = leitura.umidade;
+		docEnvio["sensores"]["som"] = leitura.som;
+
+		publicarJson(TOPICO_SHARED_PUB, docEnvio);
+		docEnvio.clear();
+	}
 }

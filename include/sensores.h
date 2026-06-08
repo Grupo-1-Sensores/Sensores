@@ -7,7 +7,7 @@ struct LeituraSensores
 {
     float temperatura;
     float umidade;
-    int som;
+    float som;
     bool valida;
 };
 
@@ -15,5 +15,9 @@ void sensoresInit();
 bool lerSensores();
 LeituraSensores getLeitura();
 float getTemperaturaVariacao();
+
+void atualizarSom();
+
+float getDbMedio();
 
 #endif
