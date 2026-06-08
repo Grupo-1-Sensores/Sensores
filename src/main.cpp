@@ -9,6 +9,8 @@
 static ulong ultimaPublicacao = 0;
 static ulong ultimaPublicacaoSom = 0;
 static const ulong delayValidacao = 50;
+static bool primeiraPublicacaoFeita = false;
+
 
 void tratarJsonComando(const String &mensagem);
 void tratarMensagemRecebida(const char *topico, const String &mensagem);
@@ -45,21 +47,21 @@ void loop()
 		verificarAlertas();
 	}
 
-	if (getLeitura().valida && millis() - ultimaPublicacao > INTERVALO_PUBLICACAO_MS)
+
+	if (getLeitura().valida && (!primeiraPublicacaoFeita || millis() - ultimaPublicacao > INTERVALO_PUBLICACAO_MS))
 	{
 		LeituraSensores leitura = getLeitura();
-		float db = getDbMedio();
-		db = round(db * 10.0) / 10.0;
 
 		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
 		docEnvio["sensores"]["umidade"] = leitura.umidade;
-		docEnvio["sensores"]["som"] = db;
+		docEnvio["sensores"]["som"] = leitura.som;
 
 		publicarJson(TOPICO_DASH, docEnvio);
 		docEnvio.clear();
 
 		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som:  %.1f db\n", leitura.temperatura, leitura.umidade, leitura.som);
 		ultimaPublicacao = millis();
+		primeiraPublicacaoFeita = true;
 	}
 
 	if (millis() - ultimaPublicacaoSom > INTERVALO_PUBLICACAO_MS_SOM)

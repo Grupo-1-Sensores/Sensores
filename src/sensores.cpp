@@ -79,11 +79,11 @@ float getTemperaturaVariacao()
 void atualizarSom()
 {
 	static int amostras[MAX_AMOSTRAS];
-	unsigned long t = millis();
+	unsigned long tempoDB = millis();
 	int quantidade = 0;
 	long somaAdc = 0;
 
-	while ((millis() - t < JANELA_MS) && (quantidade < MAX_AMOSTRAS))
+	while ((millis() - tempoDB < JANELA_MS) && (quantidade < MAX_AMOSTRAS))
 	{
 		int leitura = analogRead(PINO_SOM);
 		amostras[quantidade] = leitura;
