@@ -8,7 +8,6 @@
 
 static ulong ultimaPublicacao = 0;
 static ulong ultimaPublicacaoSom = 0;
-static const ulong delayValidacao = 50;
 static bool primeiraPublicacaoFeita = false;
 
 
@@ -38,9 +37,6 @@ void loop()
 	garantirMQTTconectado();
 	loopMQTT();
 	atualizarSom();
-
-	int valorSomMin = 0;
-	int valorSomMax = 0;
 
 	if (lerSensores())
 	{
@@ -88,6 +84,7 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
 	if (topico == nullptr)
 	{
 		Serial.println("Tópico MQTT inválido.");
+		return;
 	}
 	Serial.println("Tópico: " + String(topico));
 	Serial.println("Mensagem: " + mensagem);

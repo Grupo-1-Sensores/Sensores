@@ -11,6 +11,7 @@ JsonDocument docEnvioAlerta;
 
 void verificarAlertas()
 {
+    /*
     LeituraSensores l = getLeitura();
     if (!l.valida)
         return;
@@ -61,7 +62,7 @@ void verificarAlertas()
         somConsecutivos++;
         if (somConsecutivos >= SOM_CONSECUTIVOS)
         {
-            docEnvioAlerta["alerta_ruido"] = analogRead(PINO_SOM);
+            docEnvioAlerta["alerta_ruido"] = l.som;
             docEnvioAlerta["Hora"] = pegarHora();
             Serial.println("[ALERTA] SOM_ALTO: Ruído elevado persistente detectado");
             somConsecutivos = 0;
@@ -74,7 +75,8 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
-        //publicarJson(TOPICO_LOG, docEnvioAlerta);
+        //publicarJson(TOPICO_ALERTA, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
+    */
 }
