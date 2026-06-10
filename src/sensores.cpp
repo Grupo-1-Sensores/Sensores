@@ -9,10 +9,11 @@ static unsigned long ultimaLeitura = 0;
 static float temperaturaHistorico[5];
 static unsigned long tempoHistorico[5];
 static uint8_t indexHistorico = 0;
+static bool dhtComErro = false;
 
-static float ultimoDbMedio = 0;	  // ultima media de 10s ja fechada
-static float somaDbAcumulada = 0; // soma das janelas da media atual
-static int janelasAcumuladas = 0; // quantas janelas ja entraram
+static float ultimoDbMedio = 0;
+static float somaDbAcumulada = 0;
+static int janelasAcumuladas = 0;
 static unsigned long inicioMediaSom = 0;
 
 void sensoresInit()
@@ -36,11 +37,13 @@ bool lerSensores()
 
 	if (isnan(temperatura) || isnan(umid))
 	{
-		leituraAtual.valida = false;
+		dhtComErro = true;
+		leituraAtual = {DHT_ERRO, DHT_ERRO, som, false};
 		Serial.println("[ERRO] Falha na leitura do DHT22");
 		return false;
 	}
 
+	dhtComErro = false;
 	leituraAtual = {temperatura, umid, som, true};
 
 	temperaturaHistorico[indexHistorico] = temperatura;
@@ -53,6 +56,11 @@ bool lerSensores()
 LeituraSensores getLeitura()
 {
 	return leituraAtual;
+}
+
+bool dhtEstaComErro()
+{
+	return dhtComErro;
 }
 
 float getTemperaturaVariacao()

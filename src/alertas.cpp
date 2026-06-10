@@ -17,42 +17,35 @@ void verificarAlertas()
 
     if (l.temperatura > TEMPERATURA_MAX)
     {
-
-        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["temperatura"] = l.temperatura;
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
     }
     else if (l.temperatura < TEMPERATURA_MIN)
     {
-        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["temperatura"] = l.temperatura;
         Serial.println("[ALERTA] TEMPERATURA_MIN: Temperatura abaixo do limite");
     }
     else if (getTemperaturaVariacao() >= TEMPERATURA_VARIACAO_MAX)
     {
-        docEnvioAlerta["alerta_temperatura"] = l.temperatura;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["temperatura"] = l.temperatura;
         Serial.println("[ALERTA] TEMPERATURA_VARIACAO: Variação brusca de temperatura detectada");
     }
 
     if (l.umidade < UMIDADE_CRITICA)
     {
-        docEnvioAlerta["alerta_umidade"] = l.umidade;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["umidade"] = l.umidade;
         Serial.println("[ALERTA] UMIDADE_CRITICA: Umidade em nível crítico");
     }
 
     else if (l.umidade < UMIDADE_MIN)
     {
-        docEnvioAlerta["alerta_umidade"] = l.umidade;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["umidade"] = l.umidade;
         Serial.println("[ALERTA] UMIDADE_BAIXA: Umidade abaixo do mínimo");
     }
 
     else if (l.umidade > UMIDADE_MAX)
     {
-        docEnvioAlerta["alerta_umidade"] = l.umidade;
-        docEnvioAlerta["Hora"] = pegarHora();
+        docEnvioAlerta["sensores"]["umidade"] = l.umidade;
         Serial.println("[ALERTA] UMIDADE_ALTA: Umidade acima do máximo");
     }
 
@@ -61,8 +54,7 @@ void verificarAlertas()
         somConsecutivos++;
         if (somConsecutivos >= SOM_CONSECUTIVOS)
         {
-            docEnvioAlerta["alerta_ruido"] = l.som;
-            docEnvioAlerta["Hora"] = pegarHora();
+            docEnvioAlerta["sensores"]["som"] = l.som;
             Serial.println("[ALERTA] SOM_ALTO: Ruído elevado persistente detectado");
             somConsecutivos = 0;
         }
@@ -77,4 +69,24 @@ void verificarAlertas()
         publicarJson(TOPICO_SHARED_PUB, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
+}
+
+void verificarFalhaSensor()
+{
+    static unsigned long ultimoAlertaErro = 0;
+
+    if (!dhtEstaComErro())
+        return;
+
+    if (millis() - ultimoAlertaErro < INTERVALO_ALERTA_ERRO_MS)
+        return;
+
+    ultimoAlertaErro = millis();
+
+    docEnvioAlerta["sensores"]["temperatura"] = DHT_ERRO;
+    docEnvioAlerta["sensores"]["umidade"] = DHT_ERRO;
+    publicarJson(TOPICO_SHARED_PUB, docEnvioAlerta);
+    docEnvioAlerta.clear();
+
+    Serial.println("[ALERTA] DHT_ERRO: Falha persistente na leitura do DHT22");
 }

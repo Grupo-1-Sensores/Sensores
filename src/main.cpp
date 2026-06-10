@@ -43,8 +43,10 @@ void loop()
 		verificarAlertas();
 	}
 
+	verificarFalhaSensor();
 
-	if (getLeitura().valida && (!primeiraPublicacaoFeita || millis() - ultimaPublicacao > INTERVALO_PUBLICACAO_MS))
+
+	if ((getLeitura().valida || dhtEstaComErro()) && (!primeiraPublicacaoFeita || millis() - ultimaPublicacao > INTERVALO_PUBLICACAO_MS))
 	{
 		LeituraSensores leitura = getLeitura();
 
@@ -125,8 +127,6 @@ void tratarJsonComando(const String &mensagem)
 		Serial.println(erro.c_str());
 		return;
 	}
-
-	// TODO implementar receber dados de fora.
 }
 
 void tratarJsonComandoValida(const String &mensagem)

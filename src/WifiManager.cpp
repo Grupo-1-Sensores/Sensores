@@ -14,8 +14,6 @@ void conectarWiFi()
     Serial.println("Iniciando conexão WiFi...");
     Serial.println("=============================");
 
-    // Configura o ESP32 como station, ou seja
-    // ele vai se conectar a um roteador existente.
     WiFi.mode(WIFI_STA);
 
     WiFi.begin(WIFI_SSID, WIFI_SENHA);

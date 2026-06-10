@@ -2,5 +2,6 @@
 #define ALERTAS_H
 
 void verificarAlertas();
+void verificarFalhaSensor();
 
 #endif

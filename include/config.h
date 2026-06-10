@@ -8,6 +8,10 @@
 #define INTERVALO_DHT_MS 2000UL
 #define INTERVALO_PUBLICACAO_MS 120000UL
 #define INTERVALO_PUBLICACAO_MS_SOM 1000UL
+#define INTERVALO_ALERTA_ERRO_MS 15000UL
+
+// Valor sentinela enviado quando o DHT falha na leitura (Node-RED trata <= -900 como erro)
+#define DHT_ERRO -999
 
 #define TEMPERATURA_MAX 30.0f
 #define TEMPERATURA_MIN 14.0f

@@ -15,6 +15,7 @@ void sensoresInit();
 bool lerSensores();
 LeituraSensores getLeitura();
 float getTemperaturaVariacao();
+bool dhtEstaComErro();
 
 void atualizarSom();
 
