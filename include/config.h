@@ -20,7 +20,7 @@
 
 #define SOM_BAIXO 35f
 
-#define SOM_LIMITE_ALTO 70.0f
+#define SOM_LIMITE_ALTO 100.0f
 #define SOM_CONSECUTIVOS 5
 
 #define VALOR_SOM_MAX 2700

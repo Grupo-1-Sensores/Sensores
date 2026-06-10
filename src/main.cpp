@@ -171,7 +171,7 @@ void tratarJsonComandoRecebimento(const String &mensagem)
 		return;
 	}
 
-	if (doc["sensores"]["comando"].is<JsonObject>())
+	if (doc["sensores"]["comando"])
 	{
 		LeituraSensores leitura = getLeitura();
 

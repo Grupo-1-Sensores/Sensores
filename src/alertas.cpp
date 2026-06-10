@@ -11,7 +11,6 @@ JsonDocument docEnvioAlerta;
 
 void verificarAlertas()
 {
-    /*
     LeituraSensores l = getLeitura();
     if (!l.valida)
         return;
@@ -75,8 +74,7 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
-        //publicarJson(TOPICO_ALERTA, docEnvioAlerta);
+        publicarJson(TOPICO_SHARED_PUB, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
-    */
 }

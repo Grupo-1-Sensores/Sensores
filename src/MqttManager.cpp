@@ -56,6 +56,19 @@ void callbackInternoMQTT(char *topico, byte *payload, unsigned int tamanho)
         mensagem += (char)payload[i];
     }
 
+    // Filtro anti-eco: o broker devolve as mensagens que o proprio ESP
+    // publicou (ele assina os topicos onde publica). Se a "origem" for este
+    // dispositivo, ignora sem repassar para a aplicacao.
+    {
+        JsonDocument docEco;
+        if (deserializeJson(docEco, mensagem) == DeserializationError::Ok &&
+            docEco["origem"].is<const char *>() &&
+            strcmp(docEco["origem"], AWS_IOT_CLIENT_ID) == 0)
+        {
+            return;
+        }
+    }
+
     Serial.println("===================");
     Serial.println(" Mensagem MQTT recebida");
     Serial.println("====================");
@@ -212,6 +225,10 @@ void publicarMensagemNoTopico(int indiceTopico, const char *mensagem)
 
 void publicarJson(int indiceTopico, JsonDocument &doc)
 {
+    // Carimba a origem para que o ESP reconheca (e ignore) o proprio echo
+    // devolvido pelo broker, ja que ele assina os topicos onde publica.
+    doc["origem"] = AWS_IOT_CLIENT_ID;
+
     String mensagem;
     serializeJson(doc, mensagem);
     publicarMensagemNoTopico(indiceTopico, mensagem.c_str());

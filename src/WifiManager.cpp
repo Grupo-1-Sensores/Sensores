@@ -41,6 +41,8 @@ void conectarWiFi()
         Serial.println("Endereço IP: ");
         Serial.println((WiFi.localIP().toString()));
         Serial.println("\n\r");
+
+        configTime(-3 * 3600, 0, "pool.ntp.org");
     }
 
     else
@@ -70,16 +72,12 @@ bool wifiEstaConectado()
 }
 String pegarHora()
 {
-    if(comecoHora)
-    {
-    configTime(-3 * 3600, 0, "pool.ntp.org");
-    comecoHora = false;
-    }
-    time_t agoraHora;
-    time(&agoraHora);
-
     struct tm horaNaoFormatada;
-    getLocalTime(&horaNaoFormatada);
+    
+    if (!getLocalTime(&horaNaoFormatada, 10))
+    {
+        return String("00:00:00");
+    }
     char horaFormatada [20];
     strftime(horaFormatada, sizeof(horaFormatada), "%H:%M:%S", &horaNaoFormatada);
     return String(horaFormatada);
