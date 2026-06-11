@@ -23,7 +23,6 @@ void setup()
 {
 	Serial.begin(115200);
 	sensoresInit();
-	Serial.println("Sistema iniciado");
 	conectarWiFi();
 	configurarMQTT();
 	registrarCallbackMensagem(tratarMensagemRecebida);
@@ -53,8 +52,10 @@ void loop()
 		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
 		docEnvio["sensores"]["umidade"] = leitura.umidade;
 		docEnvio["sensores"]["som"] = leitura.som;
+		docEnvio["sensores"]["timestamp"] = pegarHora();
 
 		publicarJson(TOPICO_DASH, docEnvio);
+		publicarJson(TOPICO_SHARED_PUB, docEnvio);
 		docEnvio.clear();
 
 		Serial.printf("Temperatura: %.1f C | Umidade: %.1f %% | Som:  %.1f db\n", leitura.temperatura, leitura.umidade, leitura.som);
@@ -67,10 +68,10 @@ void loop()
 		float db = getDbMedio();
 		db = round(db * 10.0) / 10.0;
 		docEnvioSom["sensores"]["som"] = db;
+		docEnvioSom["sensores"]["timestamp"] = pegarHora();
 
 		publicarJson(TOPICO_SOM, docEnvioSom);
 		docEnvioSom.clear();
-		Serial.printf("\nEnviando %.1f db\n", db);
 
 		ultimaPublicacaoSom = millis();
 	}
@@ -150,6 +151,7 @@ void tratarJsonComandoValida(const String &mensagem)
 		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
 		docEnvio["sensores"]["umidade"] = leitura.umidade;
 		docEnvio["sensores"]["som"] = leitura.som;
+		docEnvio["sensores"]["timestamp"] = pegarHora();
 
 		publicarJson(TOPICO_SHARED_PUB, docEnvio);
 		docEnvio.clear();
@@ -178,6 +180,7 @@ void tratarJsonComandoRecebimento(const String &mensagem)
 		docEnvio["sensores"]["temperatura"] = leitura.temperatura;
 		docEnvio["sensores"]["umidade"] = leitura.umidade;
 		docEnvio["sensores"]["som"] = leitura.som;
+		docEnvio["sensores"]["timestamp"] = pegarHora();
 
 		publicarJson(TOPICO_SHARED_PUB, docEnvio);
 		docEnvio.clear();

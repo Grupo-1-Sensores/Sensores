@@ -8,6 +8,7 @@
 
 static uint8_t somConsecutivos = 0;
 JsonDocument docEnvioAlerta;
+bool temErro = false;
 
 void verificarAlertas()
 {
@@ -15,7 +16,7 @@ void verificarAlertas()
     if (!l.valida)
         return;
 
-    if (l.temperatura > TEMPERATURA_MAX)
+    if (l.temperatura >= TEMPERATURA_MAX)
     {
         docEnvioAlerta["sensores"]["temperatura"] = l.temperatura;
         Serial.println("[ALERTA] TEMP_MAX: Temperatura acima do limite");
@@ -66,7 +67,9 @@ void verificarAlertas()
 
     if (!docEnvioAlerta.isNull())
     {
+        docEnvioAlerta["sensores"]["timestamp"] = pegarHora();
         publicarJson(TOPICO_SHARED_PUB, docEnvioAlerta);
+        publicarJson(TOPICO_DASH, docEnvioAlerta);
         docEnvioAlerta.clear();
     }
 }
@@ -76,7 +79,25 @@ void verificarFalhaSensor()
     static unsigned long ultimoAlertaErro = 0;
 
     if (!dhtEstaComErro())
+    {
+        if (getLeitura().valida && temErro)
+        {
+            LeituraSensores leitura = getLeitura();
+
+            JsonDocument docEnvio;
+
+            docEnvio["sensores"]["temperatura"] = leitura.temperatura;
+            docEnvio["sensores"]["umidade"] = leitura.umidade;
+            docEnvio["sensores"]["som"] = leitura.som;
+            docEnvio["sensores"]["timestamp"] = pegarHora();
+
+            publicarJson(TOPICO_DASH, docEnvio);
+            publicarJson(TOPICO_SHARED_PUB, docEnvio);
+            docEnvio.clear();
+            temErro = false;
+        }
         return;
+    }
 
     if (millis() - ultimoAlertaErro < INTERVALO_ALERTA_ERRO_MS)
         return;
@@ -85,8 +106,11 @@ void verificarFalhaSensor()
 
     docEnvioAlerta["sensores"]["temperatura"] = DHT_ERRO;
     docEnvioAlerta["sensores"]["umidade"] = DHT_ERRO;
+    docEnvioAlerta["sensores"]["timestamp"] = pegarHora();
     publicarJson(TOPICO_SHARED_PUB, docEnvioAlerta);
+    publicarJson(TOPICO_DASH, docEnvioAlerta);
     docEnvioAlerta.clear();
+    temErro = true;
 
     Serial.println("[ALERTA] DHT_ERRO: Falha persistente na leitura do DHT22");
 }

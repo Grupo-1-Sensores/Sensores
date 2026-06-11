@@ -6,7 +6,7 @@ void garantirWiFiConectado();
 
 bool wifiEstaConectado();
 
-String pegarHora();
+time_t pegarHora();
 
 
 #endif
